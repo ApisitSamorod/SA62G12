@@ -3,6 +3,7 @@ package controller
 import (
 	"SA2021_G12/entity"
 	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,6 +22,13 @@ func CreateTreatmentRecord(context *gin.Context) {
 
 	if tx := entity.DB().Where("id = ?", treatmentRecord.DentistID).First(&dentist); tx.RowsAffected == 0 {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Dentist not found"})
+		return
+	}
+
+	entity.DB().Joins("Role").Find(&dentist)
+
+	if dentist.Role.Name != "Dentist" {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "only for dentsit"})
 		return
 	}
 

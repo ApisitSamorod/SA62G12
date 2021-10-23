@@ -152,8 +152,7 @@ function TreatmentRecord() {
 	}
 	// load nesssecary data from database
 	useEffect(()=> {
-		if ( !location.state )
-			Auth( location, history, false );
+		Auth( location, history, false );
 		getScreening();
 		getRemedyTypes();
 	}, []);
@@ -268,7 +267,7 @@ function TreatmentRecord() {
 					<Grid item xs={12}>
 						<Button variant="contained" 
 							onClick={()=>{
-								history.push("/home", location.state)
+								history.goBack()
 							}}
 						> Back </Button>
 						<Button style={{float:"right"}} variant="contained" color="primary" 

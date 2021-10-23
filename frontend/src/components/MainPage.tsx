@@ -49,8 +49,7 @@ export default function MainPage() {
 	const history = useHistory();
 	
 	useEffect(()=> {
-		if ( !location.state )
-			Auth( location, history, false )
+		Auth( location, history, false )
 	}, []);
 
 	return (
