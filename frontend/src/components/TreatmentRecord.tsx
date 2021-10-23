@@ -1,17 +1,19 @@
-import React, { useEffect }from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { 
 	Typography, Button, TextField, FormControl, Container,
 	Paper, Grid, Box, Divider, Snackbar, Select, MenuItem,
-	InputLabel
+	InputLabel,
 } from '@material-ui/core';
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import { MuiPickersUtilsProvider, KeyboardDateTimePicker } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import { 
-	UserInterface, ScreeningInterface, RemedyTypeInterface
-} from "../models/index";
+	ScreeningInterface, RemedyTypeInterface, UserLogin, AlertInfo
+} from "../models";
+
+import { useLocation, useHistory } from "react-router";
+import { Auth, UserCard } from './Utils'
 
 function Alert(props: AlertProps) {
 	return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -32,57 +34,31 @@ const useStyles = makeStyles((theme:Theme) =>
 	})
 );
 
+interface treatmentFields {
+	rawPrescription: string;
+	prescriptionInfo: string;
+	toothNumber: string;
+}
+
+
 function TreatmentRecord() {
 	const classes = useStyles();
-	
-	// prescription handler
-	// --raw
-	const [rawPrescription, setRawPrescription] = React.useState<string>("");
-	const handleRawPrescriptionChange = (event : React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => { 
-		setRawPrescription(event.target.value); 
-	};
-	// --note
-	const [prescriptionInfo, setPrescriptionInfo] = React.useState<string>("");
-	const handlePrescriptionInfoChange = (event : React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => { 
-		setPrescriptionInfo(event.target.value); 
-	};
+	const location = useLocation<UserLogin>()
+	const history = useHistory();
 
-	// toothnumber handler
-	const [toothNumber, setToothNumber] = React.useState<string>("");
-	const handleToothNumberChange = (event : React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => { 
-		setToothNumber(event.target.value); 
-	};
+	const [otherData,setOtherData] = React.useState<treatmentFields>({
+		rawPrescription: "",
+		prescriptionInfo: "",
+		toothNumber: "",
+	})
+
+	const handleDataChange = (prop: keyof treatmentFields ) => (event : React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
+		setOtherData( { ...otherData, [prop]:event.target.value } )
+	} 
 	
 	// date-time handler
 	const [selectedDate, setSelectedDate] = React.useState<Date | null> (new Date());
 	const handleDateChange = (date:Date | null) => { setSelectedDate(date); };
-
-	// load dentists from database
-	const [dentists, setDentists] = React.useState<UserInterface[]>([]);
-	const [selectedDentist, setDentist] = React.useState("");
-	const handleDentistChange = ( event:React.ChangeEvent<{ name?: string; value: unknown }> ) =>{
-		setDentist(event.target.value as string);
-	};
-	const [currentDentist, setCurrentDentist] = React.useState<UserInterface>({ID:"",Name:""});
-
-	const getDentists = async () => {
-		const apiUrl = "http://localhost:8080/users/Dentist";
-		const requestOption = {
-			method : "GET",
-			header : { "Content-Type" : "application/json" }
-		};
-		
-		fetch(apiUrl, requestOption)
-		.then((response) => response.json())
-		.then((res) => {
-			console.log(res.data);
-			if (res.data) {
-				setDentists(res.data);
-				// ***This should be current dentist that logged in but let's leave it at that for now***
-				setCurrentDentist(res.data[0]);
-			};
-		});
-	};
 		
 	// screenings list handler
 	const [screenings, setScreenings ] = React.useState<ScreeningInterface[]>([])
@@ -138,14 +114,23 @@ function TreatmentRecord() {
 		setOpen(false);
 	};
 	
+	const [message, setMessage] = React.useState<AlertInfo>({message:'',level: 'warning'});
+
 	function submit() {
+
+		if ( location.state.RoleName != "Dentist" ) {
+			setOpen(true);
+			setMessage( { message:'You have no authorize to make this action', level:'error'} );
+			return;
+		}
+
 		let data = {
-			PrescriptionRaw		: rawPrescription ?? "", 
-			PrescriptionNote	: prescriptionInfo ?? "",
-			ToothNumber			: toothNumber,
+			PrescriptionRaw		: otherData.rawPrescription, 
+			PrescriptionNote	: otherData.prescriptionInfo,
+			ToothNumber			: otherData.toothNumber,
 			Date				: selectedDate,
 			ScreeningRecordID	: selectedScreening,
-			DentistID			: currentDentist.ID,
+			DentistID			: location.state.ID,
 			RemedyTypeID		: selectedRemedy
 		};
 
@@ -160,22 +145,24 @@ function TreatmentRecord() {
 		.then((response) => response.json())
 		.then((res) => {
 			console.log(res.data);
-			if (res.data) setOpen(true);
+			setOpen(true);
+			if (res.data) setMessage( { message:'Succesfully saved', level:'success' } );
+			else setMessage( { message:'Failed to save', level:'error' } );
 		});
 	}
 	// load nesssecary data from database
 	useEffect(()=> {
-		getDentists(); // this should change to load only the loggedin dentist
+		if ( !location.state )
+			Auth( location, history, false );
 		getScreening();
 		getRemedyTypes();
 	}, []);
 
 	return (
 		<Container className={classes.container}>
+			<UserCard data={location.state}/>
 			<Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-				<Alert onClose={handleClose} severity="success">
-				This is a success message!
-				</Alert>
+			<Alert severity={message.level} onClick={handleClose}> {message.message} </Alert>
 			</Snackbar>
 			<Paper className={classes.paper}>
 				<Box display="flex">
@@ -199,13 +186,9 @@ function TreatmentRecord() {
 								labelId="demo-simple-select-readonly-label"
 								id="demo-simple-select-readonly"
 								inputProps={{ readOnly: true }}
-								onChange={handleDentistChange}
-								value={currentDentist.ID}
+								value={location.state.ID}
 								>
-								<MenuItem value=""><em>None</em></MenuItem>
-								{ dentists.map( (dentist:UserInterface) => (
-									<MenuItem value={dentist.ID}>{dentist.Name}</MenuItem>
-								))}
+								<MenuItem value={location.state.ID}>{location.state.Name}</MenuItem>
 							</Select>
 						</FormControl>
 					</Grid>
@@ -219,7 +202,7 @@ function TreatmentRecord() {
 								>
 								<MenuItem value=""><em>None</em></MenuItem>
 								{ screenings.map( (screening:ScreeningInterface) => (
-									<MenuItem value={screening.ID} >{screening.ID}</MenuItem>
+									<MenuItem value={screening.ID} >{screening.ID} {screening.User.Name}</MenuItem>
 								))}
 							</Select>
 						</FormControl>
@@ -244,7 +227,7 @@ function TreatmentRecord() {
 							<TextField
 								id="standard-multiline-flexible"
 								label="ใบสั่งยา"
-								onChange={handleRawPrescriptionChange}
+								onChange={handleDataChange('rawPrescription')}
 								multiline
 								maxRows={4}
 								/>
@@ -255,7 +238,7 @@ function TreatmentRecord() {
 							<TextField
 								id="standard-multiline-flexible"
 								label="หมายเหตุการสั่งยา"
-								onChange={handlePrescriptionInfoChange}
+								onChange={handleDataChange('prescriptionInfo')}
 								multiline
 								maxRows={4}
 								/>
@@ -263,7 +246,7 @@ function TreatmentRecord() {
 					</Grid>
 					<Grid item xs={12}> 
 						<FormControl fullWidth variant="outlined" >
-							<TextField id="standard-basic" label="หมายเลขฟันที่รักษา" onChange={handleToothNumberChange}/>
+							<TextField id="standard-basic" label="หมายเลขฟันที่รักษา" onChange={handleDataChange('toothNumber')}/>
 						</FormControl>
 					</Grid>
 					<Grid item xs={12}> 
@@ -283,7 +266,11 @@ function TreatmentRecord() {
 						</FormControl>
 					</Grid>
 					<Grid item xs={12}>
-						<Button component={RouterLink} to="/" variant="contained" > Back </Button>
+						<Button variant="contained" 
+							onClick={()=>{
+								history.push("/home", location.state)
+							}}
+						> Back </Button>
 						<Button style={{float:"right"}} variant="contained" color="primary" 
 							onClick={submit}
 							> 

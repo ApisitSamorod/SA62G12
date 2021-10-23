@@ -6,6 +6,7 @@ import (
 
 type Screening struct {
 	gorm.Model
+	Name 				string
 	Illness				string
 	Detail 				string
 

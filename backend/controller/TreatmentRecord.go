@@ -3,7 +3,6 @@ package controller
 import (
 	"SA2021_G12/entity"
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
