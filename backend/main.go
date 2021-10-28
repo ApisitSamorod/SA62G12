@@ -59,6 +59,7 @@ func main() {
 
 	// Treatment
 	r.POST("/treatmentRecord", controller.CreateTreatment)
+	r.GET("/treatmentRecords", controller.ListTreatmentRecord)
 
 	// User
 	r.GET("/users", controller.ListUser)

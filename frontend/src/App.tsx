@@ -5,7 +5,7 @@ import TreatmentRecord from './components/TreatmentRecord'
 //import TempAppbar from './components/TempAppBar'
 import LoginPage from './components/Loginpage';
 import MainPage from './components/MainPage';
-
+import TreatmentData from './components/TreatmentData';
 
 function App() {
 	return (
@@ -21,6 +21,8 @@ function App() {
 				<Route exact path="/" component={LoginPage} />
 				<Route exact path="/home" component={MainPage} />
 				<Route exact path="/treatment_record" component={TreatmentRecord} />
+				<Route exact path="/treatment_record_data" component={TreatmentData} />
+
 			</Switch>
 		</div>
 	</Router>

@@ -61,3 +61,15 @@ func CreateTreatment(context *gin.Context) {
 
 	context.JSON(http.StatusOK, gin.H{"data": treatmentData})
 }
+
+// GET /treatmentRecords
+func ListTreatmentRecord(context *gin.Context) {
+	var treatmentRecords []entity.Treatment
+
+	if err := entity.DB().Preload("Screening.Patient").Preload("RemedyType").Find(&treatmentRecords).Error; err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"data": treatmentRecords})
+}

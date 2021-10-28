@@ -76,6 +76,9 @@ export default function MainPage() {
 						color="primary"
 						endIcon={<Icon>search</Icon>}
 						size="small"
+						onClick={ () => {
+							history.push('/treatment_record_data', user)
+						}}
 					> ดูข้อมูล </Button>
 					<Button
 						variant="contained"

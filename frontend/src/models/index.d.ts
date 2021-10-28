@@ -20,6 +20,14 @@ export type {
 	UserInterface,
 	RemedyTypeInterface,
 	UserLogin,
-	AlertInfo
+	AlertInfo,
+	PatientInterface,
 }
 
+export interface TreatmentInteface {
+	ID : string;
+	Date: Date;
+	ToothNumber: string;
+	Screening : ScreeningInterface;
+	RemedyType: RemedyTypeInterface;
+}

@@ -9,7 +9,7 @@ import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import { MuiPickersUtilsProvider, KeyboardDateTimePicker } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import { 
-	ScreeningInterface, RemedyTypeInterface, UserLogin, AlertInfo
+	ScreeningInterface, RemedyTypeInterface, UserLogin, AlertInfo, TreatmentInteface
 } from "../models";
 
 import { useHistory } from "react-router";
