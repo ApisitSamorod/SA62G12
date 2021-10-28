@@ -45,16 +45,19 @@ const useStyles = makeStyles( (them:Theme) => createStyles({
 
 export default function MainPage() {
 	const classes = useStyles();
-	const location = useLocation<UserLogin>()
 	const history = useHistory();
 	
+	const [user, setUser] = React.useState<UserLogin>({
+		ID: "", Name: "", RoleID: "", RoleName: ""
+	});
+
 	useEffect(()=> {
-		Auth( location, history, false )
+		Auth(history, false, setUser)
 	}, []);
 
 	return (
 		<React.Fragment>
-		<UserCard data={location.state}/>
+		<UserCard data={user}/>
 		<Box className={classes.root} >
 			<Box className={classes.block}>
 			<Accordion className={classes.accordion} >
@@ -80,7 +83,7 @@ export default function MainPage() {
 						endIcon={<Icon>save</Icon>}
 						size="small"
 						onClick={ () => {
-							history.push('/treatment_record', location.state)
+							history.push('/treatment_record', user)
 						}}
 					> บันทึกข้อมูล </Button>
 					</Container>

@@ -1,9 +1,7 @@
 import React from 'react'
 
 import { 
-	Typography, Button, FormControl, Container,
-	Box, Divider, Snackbar, Card, CardContent, CardActions,
-	InputLabel, Input, InputAdornment, IconButton, Icon
+	Typography, Button, Card, CardContent, CardActions, Icon
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
@@ -13,57 +11,26 @@ import { UserLogin } from "../models";
 import * as H from 'history'
 import { useHistory } from 'react-router';
 
-function setCookie(cname:string, cvalue:string, exdays:number): void {
-	const d = new Date();
-	d.setTime(d.getTime() + (exdays*24*60*60*1000));
-	let expires = "expires="+ d.toUTCString();
-	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
+export const Auth = async (history : H.History, isLoginPage: boolean, setUser: React.Dispatch<React.SetStateAction<UserLogin>> ) => {
+	const apiUrl = 'http://localhost:8080/TRMauth';
+	const requestOption = {
+		method : "GET",
+		header : { "Content-Type" : "application/json" },
+		credentials : 'include' as RequestCredentials,
+	};
 
-function getCookie(cname:string): string {
-	let name = cname + "=";
-	let decodedCookie = decodeURIComponent(document.cookie);
-	let ca = decodedCookie.split(';');
-	for(let i = 0; i <ca.length; i++) {
-		let c = ca[i];
-		while (c.charAt(0) === ' ') {
-		c = c.substring(1);
+	fetch(apiUrl, requestOption)
+	.then((response) => response.json())
+	.then((res) => {
+		if (res.data) {
+			if ( isLoginPage )
+				history.replace("/home", res.data)
+			setUser(res.data)
+		} else {
+			history.replace("/")
 		}
-		if (c.indexOf(name) === 0) {
-		return c.substring(name.length, c.length);
-		}
-	}
-	return "";
+	});
 }
-
-const Auth = async ( location : H.Location<UserLogin>, history : H.History, isLoginPage: boolean ) => {
-	const cookie = getCookie("g12_auth")
-	// get user cookie
-	if (cookie) {
-		// yes we has our cookies, check to database
-		let data = { Key: cookie }
-		const apiUrl = 'http://localhost:8080/auth';
-		const requestOption = {
-			method : "POST",
-			header : { "Content-Type" : "application/json" },
-			body : JSON.stringify(data)
-		};
-		fetch(apiUrl, requestOption)
-		.then((response) => response.json())
-		.then((res) => {
-			if (!res.data) {
-				setCookie("g12_auth", "", 0);
-				if (!isLoginPage)
-					history.replace("/", {nocheck:true});
-			} else {
-				if (isLoginPage) history.replace("/home", res.data); 
-				else location.state = res.data;
-			}
-		});
-	} else if (!isLoginPage) history.replace("/", {nocheck:true});
-}
-
-export { setCookie, getCookie, Auth }
 
 const useStyles = makeStyles( (them:Theme) => createStyles({
 	card: {
@@ -83,8 +50,20 @@ export const UserCard = (props: {data:UserLogin}) => {
 	const history = useHistory();
 
 	function Logout() {
-		setCookie("g12_auth", "", 0);
-		history.replace("/"); 
+		const apiUrl = 'http://localhost:8080/TRMlogout';
+		const requestOption = {
+			method : "GET",
+			header : { "Content-Type" : "application/json" },
+			credentials : 'include' as RequestCredentials,
+		};
+
+		fetch(apiUrl, requestOption)
+		.then((response) => response.json())
+		.then((res) => {
+			if (res.data) {
+				history.replace("/")
+			} 
+		});
 	}
 
 	return (

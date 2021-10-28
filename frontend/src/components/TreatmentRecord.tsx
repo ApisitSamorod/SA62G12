@@ -12,7 +12,7 @@ import {
 	ScreeningInterface, RemedyTypeInterface, UserLogin, AlertInfo
 } from "../models";
 
-import { useLocation, useHistory } from "react-router";
+import { useHistory } from "react-router";
 import { Auth, UserCard } from './Utils'
 
 function Alert(props: AlertProps) {
@@ -43,7 +43,6 @@ interface treatmentFields {
 
 function TreatmentRecord() {
 	const classes = useStyles();
-	const location = useLocation<UserLogin>()
 	const history = useHistory();
 
 	const [otherData,setOtherData] = React.useState<treatmentFields>({
@@ -118,7 +117,7 @@ function TreatmentRecord() {
 
 	function submit() {
 
-		if ( location.state.RoleName != "Dentist" ) {
+		if ( user.RoleName != "Dentist" ) {
 			setOpen(true);
 			setMessage( { message:'You have no authorize to make this action', level:'error'} );
 			return;
@@ -129,8 +128,8 @@ function TreatmentRecord() {
 			PrescriptionNote	: otherData.prescriptionInfo,
 			ToothNumber			: otherData.toothNumber,
 			Date				: selectedDate,
-			ScreeningRecordID	: selectedScreening,
-			DentistID			: location.state.ID,
+			ScreeningID			: selectedScreening,
+			DentistID			: user.ID,
 			RemedyTypeID		: selectedRemedy
 		};
 
@@ -151,15 +150,20 @@ function TreatmentRecord() {
 		});
 	}
 	// load nesssecary data from database
+
+	const [user, setUser] = React.useState<UserLogin>({
+		ID: "", Name: "", RoleID: "", RoleName: ""
+	});
+
 	useEffect(()=> {
-		Auth( location, history, false );
+		Auth( history, false, setUser );
 		getScreening();
 		getRemedyTypes();
 	}, []);
 
 	return (
 		<Container className={classes.container}>
-			<UserCard data={location.state}/>
+			<UserCard data={user}/>
 			<Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
 			<Alert severity={message.level} onClick={handleClose}> {message.message} </Alert>
 			</Snackbar>
@@ -185,9 +189,9 @@ function TreatmentRecord() {
 								labelId="demo-simple-select-readonly-label"
 								id="demo-simple-select-readonly"
 								inputProps={{ readOnly: true }}
-								value={location.state.ID}
+								value={user.ID}
 								>
-								<MenuItem value={location.state.ID}>{location.state.Name}</MenuItem>
+								<MenuItem value={user.ID}>{user.Name}</MenuItem>
 							</Select>
 						</FormControl>
 					</Grid>
@@ -201,7 +205,7 @@ function TreatmentRecord() {
 								>
 								<MenuItem value=""><em>None</em></MenuItem>
 								{ screenings.map( (screening:ScreeningInterface) => (
-									<MenuItem value={screening.ID} >{screening.ID} {screening.User.Name}</MenuItem>
+									<MenuItem value={screening.ID} >{screening.ID} {screening.Queue} {screening.Patient.Firstname} {screening.Patient.Lastname}</MenuItem>
 								))}
 							</Select>
 						</FormControl>

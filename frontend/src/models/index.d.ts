@@ -1,7 +1,7 @@
 import { Color as AlertColor } from '@material-ui/lab/Alert'
 import ScreeningInterface from "./IScreening"
-import UserInterface from "./IUser"
-import RemedyTypeInterface from "./IRemedyTypeInteface"
+import PatientInterface from "./IPatient"
+import RemedyTypeInterface from "./IRemedyType"
 
 interface UserLogin {
 	ID : string;

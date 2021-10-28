@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { 
 	Typography, Button, FormControl, Container,
 	Box, Divider, Snackbar, Card,
@@ -11,7 +11,7 @@ import {
 } from '@material-ui/icons'
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { setCookie, Auth } from './Utils'
+import { Auth } from './Utils'
 import { UserLogin, AlertInfo } from '../models';
 
 // css style classes
@@ -47,7 +47,7 @@ const useStyles = makeStyles( (them:Theme) => createStyles({
 // interface for user login data
 interface UserData {
 	Username: string;
-	Password: string;
+	Pass: string;
 	showPassword: boolean;
 }
 
@@ -64,13 +64,12 @@ function Alert(props: AlertProps) {
 export default function LoginPage() {
 	const classes = useStyles();
 	const history = useHistory();
-	const location = useLocation<UserLogin>();
 
 	//----------------------------//
 	// Value user passed in
 	const [values, setValues] = React.useState<UserData>({
 		Username: '',
-		Password: '',
+		Pass: '',
 		showPassword: false,
 	});
 	const handleChange = (prop: keyof UserData) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,35 +93,28 @@ export default function LoginPage() {
 	const Login = async () => {
 		let data = {
 			Username : values.Username,
-			Password : values.Password
+			Password : values.Pass
 		}
-		const apiUrl = 'http://localhost:8080/login';
+		const apiUrl = 'http://localhost:8080/TRMlogin';
 		const requestOption = {
 			method : "POST",
 			header : { "Content-Type" : "application/json" },
+			credentials : 'include' as RequestCredentials,
 			body : JSON.stringify(data)
 		};
 		
 		fetch(apiUrl, requestOption)
 		.then((response) => response.json())
 		.then((res) => {
-			console.log(res.data);
-			if (!res.data) {
-				// Faliled to login
-				setStatus(true);
-				setMessage({message:"Incorrect Username or Password", level:'error'});
-			} else {
-				// Login succesfully
-				// change to main page with login props
-				setCookie("g12_auth", res.data.Key, 1);
-				history.replace("/home", res.data);
+			if (res.data) {
+				history.replace("/home", {})
 			}
 		});
 	};
 
 	const handleClick = () => {
 		// no input in field
-		if ( values.Username === "" || values.Password === "" ) {
+		if ( values.Username === "" || values.Pass === "" ) {
 			setStatus(true);
 			setMessage({message:"Empty username or password", level:'warning'});
 		} else {
@@ -136,8 +128,12 @@ export default function LoginPage() {
 	};
 	//----------------------------//
 
+	const [user, setUser] = React.useState<UserLogin>({
+		ID: "", Name: "", RoleID: "", RoleName: ""
+	});
+
 	useEffect(()=> {
-		Auth(location, history, true);
+		Auth(history, true, setUser);
 	}, []);
 
 	return (
@@ -165,8 +161,8 @@ export default function LoginPage() {
 					<InputLabel>Password</InputLabel>
 					<Input
 						type={values.showPassword ? 'text' : 'password'}
-						value={values.Password}
-						onChange={handleChange('Password')}
+						value={values.Pass}
+						onChange={handleChange('Pass')}
 						endAdornment={
 							<InputAdornment position="end">
 							<IconButton

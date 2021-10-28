@@ -1,15 +1,16 @@
 package controller
 
 import (
-	"SA2021_G12/entity"
-	"net/http"
+	"github.com/ApisitSamorod/SA62G12/entity"
 
 	"github.com/gin-gonic/gin"
+
+	"net/http"
 )
 
 // POST /treatmentRecord
-func CreateTreatmentRecord(context *gin.Context) {
-	var treatmentRecord entity.TreatmentRecord
+func CreateTreatment(context *gin.Context) {
+	var treatmentRecord entity.Treatment
 
 	var screening entity.Screening
 	var dentist entity.User
@@ -20,7 +21,7 @@ func CreateTreatmentRecord(context *gin.Context) {
 		return
 	}
 
-	if tx := entity.DB().Where("id = ?", treatmentRecord.DentistID).First(&dentist); tx.RowsAffected == 0 {
+	if tx := entity.DB().Where("id = ?", treatmentRecord.UserDentistID).First(&dentist); tx.RowsAffected == 0 {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Dentist not found"})
 		return
 	}
@@ -32,7 +33,7 @@ func CreateTreatmentRecord(context *gin.Context) {
 		return
 	}
 
-	if tx := entity.DB().Where("id = ?", treatmentRecord.ScreeningRecordID).First(&screening); tx.RowsAffected == 0 {
+	if tx := entity.DB().Where("id = ?", treatmentRecord.ScreeningID).First(&screening); tx.RowsAffected == 0 {
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Screening not found"})
 		return
 	}
@@ -42,15 +43,15 @@ func CreateTreatmentRecord(context *gin.Context) {
 		return
 	}
 
-	treatmentData := entity.TreatmentRecord{
+	treatmentData := entity.Treatment{
 		PrescriptionRaw:  treatmentRecord.PrescriptionRaw,
 		PrescriptionNote: treatmentRecord.PrescriptionNote,
 		ToothNumber:      treatmentRecord.ToothNumber,
 		Date:             treatmentRecord.Date,
 		// create with assosiation
-		ScreeningRecord: screening,
-		Dentist:         dentist,
-		RemedyType:      remedy,
+		Screening:   screening,
+		UserDentist: dentist,
+		RemedyType:  remedy,
 	}
 
 	if err := entity.DB().Create(&treatmentData).Error; err != nil {
