@@ -11,7 +11,6 @@ import DateFnsUtils from "@date-io/date-fns";
 import { 
 	ScreeningInterface, RemedyTypeInterface, UserLogin, AlertInfo
 } from "../models";
-import { Widgets } from '@material-ui/icons';
 
 function Alert(props: AlertProps) {
 	return <MuiAlert elevation={6} variant="filled" {...props} />;

@@ -1,13 +1,10 @@
 import React from 'react'
-
 import { 
 	Typography, Icon,
 	Drawer, List, ListItem, Divider, ListItemText, ListItemIcon
 } from '@material-ui/core';
-import { createStyles, makeStyles, Theme, createTheme, ThemeProvider } from '@material-ui/core/styles';
-
+import { createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import { UserLogin } from "../models";
-
 import * as H from 'history'
 import { useHistory } from 'react-router';
 
@@ -33,12 +30,6 @@ export const Auth = async (history : H.History, isLoginPage: boolean, setUser: R
 }
 
 const drawerWidth = '240px';
-
-const darkTheme = createTheme({
-	palette: {
-	  type: 'dark',
-	},
-});
 
 const useStyles = makeStyles( (them:Theme) => createStyles({
 	card: {

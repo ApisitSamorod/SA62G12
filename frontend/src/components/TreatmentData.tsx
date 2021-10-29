@@ -1,13 +1,8 @@
 import React, {useEffect} from 'react'
-
-import { useHistory } from "react-router";
 import { TreatmentInteface } from '../models';
-
 import { createStyles, makeStyles, Theme  } from '@material-ui/core/styles';
-
 import {
-	TableCell, TableBody, TableContainer, TableHead, TableRow, Paper, Table,
-	Button, Icon, Container
+	TableCell, TableBody, TableContainer, TableHead, TableRow, Paper, Table, Container
 } from '@material-ui/core';
 
 const useStyles = makeStyles((theme:Theme) => 
@@ -24,7 +19,6 @@ const useStyles = makeStyles((theme:Theme) =>
 
 export default function TreatmentData( ) {
 	const classes = useStyles();
-	const history = useHistory();
 
 	// treatment-data list handler
 	const [treatments, setTreatments] = React.useState<TreatmentInteface[]>([]);

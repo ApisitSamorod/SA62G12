@@ -54,9 +54,10 @@ func TRM_LoginToSite(context *gin.Context) {
 	}
 
 	http.SetCookie(context.Writer, &http.Cookie{
-		Name:    "g12_auth",
-		Value:   token,
-		Expires: time.Now().Add(time.Hour * 24),
+		Name:     "g12_auth",
+		Value:    token,
+		Expires:  time.Now().Add(time.Hour * 24),
+		HttpOnly: true,
 	})
 
 	context.JSON(http.StatusOK, gin.H{"data": "successfully loggedin"})
@@ -98,8 +99,9 @@ func TRM_Logout(context *gin.Context) {
 	fmt.Println(cookie)
 
 	http.SetCookie(context.Writer, &http.Cookie{
-		Name:    "g12_auth",
-		Expires: time.Now().Add(-time.Hour),
+		Name:     "g12_auth",
+		Expires:  time.Now().Add(-time.Hour),
+		HttpOnly: true,
 	})
 
 	context.JSON(http.StatusOK, gin.H{"data": "logged out"})
