@@ -2,18 +2,16 @@ import React, { useEffect } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { 
 	Typography, Button, TextField, FormControl, Container,
-	Paper, Grid, Box, Divider, Snackbar, Select, MenuItem,
+	Paper, Grid, Box, Snackbar, Select, MenuItem,
 	InputLabel,
 } from '@material-ui/core';
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import { MuiPickersUtilsProvider, KeyboardDateTimePicker } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import { 
-	ScreeningInterface, RemedyTypeInterface, UserLogin, AlertInfo, TreatmentInteface
+	ScreeningInterface, RemedyTypeInterface, UserLogin, AlertInfo
 } from "../models";
-
-import { useHistory } from "react-router";
-import { Auth, UserCard } from './Utils'
+import { Widgets } from '@material-ui/icons';
 
 function Alert(props: AlertProps) {
 	return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -21,9 +19,19 @@ function Alert(props: AlertProps) {
 
 const useStyles = makeStyles((theme:Theme) => 
 	createStyles({
-		root: {flexGrow: 1},
-		container: {marginTop: theme.spacing(2), maxWidth:"40vw"},
-		paper: {padding: theme.spacing(2), color: theme.palette.text.secondary},
+		root: {
+			width: 'calc(100% - 240px)',
+			margin: '0px 240px 0px 0px',
+			padding: '24px',
+			flexGrow: 1
+		},
+		container: { 
+			width: '50%',
+		},
+		paper: {
+			padding: theme.spacing(2), 
+			color: theme.palette.text.secondary
+		},
 		formControl: {
 			margin: theme.spacing(0),
 			minWidth: "100%",
@@ -41,9 +49,8 @@ interface treatmentFields {
 }
 
 
-function TreatmentRecord() {
+function TreatmentRecord( props: {user:UserLogin} ) {
 	const classes = useStyles();
-	const history = useHistory();
 
 	const [otherData,setOtherData] = React.useState<treatmentFields>({
 		rawPrescription: "",
@@ -117,7 +124,7 @@ function TreatmentRecord() {
 
 	function submit() {
 
-		if ( user.RoleName != "Dentist" ) {
+		if ( props.user.RoleName !== "Dentist" ) {
 			setOpen(true);
 			setMessage( { message:'You have no authorize to make this action', level:'error'} );
 			return;
@@ -129,7 +136,7 @@ function TreatmentRecord() {
 			ToothNumber			: otherData.toothNumber,
 			Date				: selectedDate,
 			ScreeningID			: selectedScreening,
-			DentistID			: user.ID,
+			DentistID			: props.user.ID,
 			RemedyTypeID		: selectedRemedy
 		};
 
@@ -150,23 +157,17 @@ function TreatmentRecord() {
 		});
 	}
 	// load nesssecary data from database
-
-	const [user, setUser] = React.useState<UserLogin>({
-		ID: "", Name: "", RoleID: "", RoleName: ""
-	});
-
 	useEffect(()=> {
-		Auth( history, false, setUser );
 		getScreening();
 		getRemedyTypes();
 	}, []);
 
 	return (
-		<Container className={classes.container}>
-			<UserCard data={user}/>
+		<Container className={classes.root}>
 			<Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
 			<Alert severity={message.level} onClick={handleClose}> {message.message} </Alert>
 			</Snackbar>
+			<Container className={classes.container}>
 			<Paper className={classes.paper}>
 				<Box display="flex">
 					<Box flexGrow={1}>
@@ -180,18 +181,17 @@ function TreatmentRecord() {
 						</Typography>
 					</Box>	
 				</Box> 
-				<Divider/>
-				<Grid container spacing={3} className={classes.root}>
+				<Grid container spacing={3} >
 					<Grid item xs={12}>
-						<FormControl className={classes.formControl}>
+						<FormControl className={classes.formControl} disabled error={ props.user.RoleName !== "Dentist"}>
 							<InputLabel id="demo-simple-select-readonly-label">หมอฟัน</InputLabel>
 							<Select
 								labelId="demo-simple-select-readonly-label"
 								id="demo-simple-select-readonly"
 								inputProps={{ readOnly: true }}
-								value={user.ID}
+								value={props.user.ID}
 								>
-								<MenuItem value={user.ID}>{user.Name}</MenuItem>
+								<MenuItem value={props.user.ID}>{props.user.Name}</MenuItem>
 							</Select>
 						</FormControl>
 					</Grid>
@@ -269,11 +269,6 @@ function TreatmentRecord() {
 						</FormControl>
 					</Grid>
 					<Grid item xs={12}>
-						<Button variant="contained" 
-							onClick={()=>{
-								history.goBack()
-							}}
-						> Back </Button>
 						<Button style={{float:"right"}} variant="contained" color="primary" 
 							onClick={submit}
 							> 
@@ -282,6 +277,7 @@ function TreatmentRecord() {
 					</Grid>
 				</Grid>
 			</Paper>
+			</Container>
 		</Container>
 	);
 }

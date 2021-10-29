@@ -1,11 +1,11 @@
 import React from 'react'
 
 import { 
-	Typography, Button, Card, CardContent, CardActions, Icon
+	Typography, Icon,
+	Drawer, List, ListItem, Divider, ListItemText, ListItemIcon
 } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme, createTheme, ThemeProvider } from '@material-ui/core/styles';
 
-//import { useHistory, useLocation } from 'react-router-dom';
 import { UserLogin } from "../models";
 
 import * as H from 'history'
@@ -24,13 +24,21 @@ export const Auth = async (history : H.History, isLoginPage: boolean, setUser: R
 	.then((res) => {
 		if (res.data) {
 			if ( isLoginPage )
-				history.replace("/home", res.data)
+				history.replace("/treatment_record_data", res.data)
 			setUser(res.data)
 		} else {
 			history.replace("/")
 		}
 	});
 }
+
+const drawerWidth = '240px';
+
+const darkTheme = createTheme({
+	palette: {
+	  type: 'dark',
+	},
+});
 
 const useStyles = makeStyles( (them:Theme) => createStyles({
 	card: {
@@ -42,6 +50,14 @@ const useStyles = makeStyles( (them:Theme) => createStyles({
 		top: 0,
 		right: 0,
 		margin: '20px'
+	},
+	drawer: 
+	{
+		width: drawerWidth,
+		flexShrink: 0,
+	},
+	drawerPaper: {
+		width: drawerWidth,
 	},
 }))
 
@@ -61,30 +77,53 @@ export const UserCard = (props: {data:UserLogin}) => {
 		.then((response) => response.json())
 		.then((res) => {
 			if (res.data) {
-				history.replace("/")
+				history.replace("")
 			} 
 		});
 	}
 
 	return (
 		<React.Fragment>
-		<Card className={classes.card}>
-			<CardContent>
-			<Typography color="textSecondary" gutterBottom>
-				{props.data.RoleName}
-			</Typography>
-			<Typography variant="h5" component="h2">
-				{props.data.Name}
-			</Typography>
-			</CardContent>
-			<CardActions style={ { display:'flex', justifyContent: 'flex-end' } }>
-				<Button 
-					size="small" color='primary' 
-					endIcon={<Icon>logout</Icon>}
-					onClick={Logout}
-				> Logout </Button>
-			</CardActions>
-		</Card>
+
+		<Drawer
+			className={classes.drawer}
+			variant="permanent"
+			classes={{
+				paper: classes.drawerPaper,
+			}}
+			anchor="right"
+		>
+			<List>
+			<ListItem style={{flexDirection: 'column', alignItems: 'start', paddingBottom:'16px'}}>
+				<Typography color="textSecondary" gutterBottom>
+					{props.data.RoleName}
+				</Typography>
+				<Typography variant="h5" component="h2">
+					{props.data.Name}
+				</Typography>
+			</ListItem>
+			<Divider/>
+			<ListItem button onClick={ () => history.replace('/treatment_record') }>
+				<ListItemText style={{ display:'flex',justifyContent:'flex-end'}} >Add record</ListItemText>
+				<ListItemIcon 
+					style={{ justifyContent:'flex-end'}} 
+				><Icon>playlist_add</Icon></ListItemIcon>
+			</ListItem>
+			<ListItem button onClick={ () => history.replace('/treatment_record_data') }>
+				<ListItemText style={{ display:'flex',justifyContent:'flex-end'}} >Record view</ListItemText>
+				<ListItemIcon 
+					style={{ justifyContent:'flex-end'}} 
+				><Icon>view_list</Icon></ListItemIcon>
+			</ListItem>
+			<ListItem button onClick={ Logout }>
+				<ListItemText style={{ display:'flex',justifyContent:'flex-end'}} >Logout</ListItemText>
+				<ListItemIcon 
+					style={{ justifyContent:'flex-end'}} 
+				><Icon>logout</Icon></ListItemIcon>
+			</ListItem>
+			</List>
+		</Drawer>
+
 		</React.Fragment>
 	)
 }

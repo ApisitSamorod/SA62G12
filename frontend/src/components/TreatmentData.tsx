@@ -1,8 +1,7 @@
 import React, {useEffect} from 'react'
 
 import { useHistory } from "react-router";
-import { Auth, UserCard } from './Utils'
-import { TreatmentInteface, UserLogin } from '../models';
+import { TreatmentInteface } from '../models';
 
 import { createStyles, makeStyles, Theme  } from '@material-ui/core/styles';
 
@@ -14,24 +13,16 @@ import {
 const useStyles = makeStyles((theme:Theme) => 
 	createStyles({
 		root: {
-			width: '75vw',
-			margin: '16px'
+			width: 'calc(100% - 240px)',
+			marginRight: '240px',
+			padding: '24px'
 		},
 		table: {
-			minWidth: 650,
-		},
-		buttonContainer: {
-			display: 'flex',
-			justifyContent: 'flex-end',
-			alignItems: 'center',
-			padding: '0px',
-			gap: '8px'
 		},
 	})
 );
-  
 
-export default function TreatmentData() {
+export default function TreatmentData( ) {
 	const classes = useStyles();
 	const history = useHistory();
 
@@ -53,19 +44,14 @@ export default function TreatmentData() {
 		});
 	}
 
-	const [user, setUser] = React.useState<UserLogin>({
-		ID: "", Name: "", RoleID: "", RoleName: ""
-	});
-
 	useEffect(()=>{
-		Auth(history, false, setUser);
 		getTreatments();
 	}, []);
 
 	return (
 		<React.Fragment>
-			<UserCard data={user}/>
-			<TableContainer component={Paper} className={classes.root}>
+			<Container className={classes.root}>
+			<TableContainer component={Paper} >
 			<Table className={classes.table} aria-label="simple table">
 				<TableHead>
 				<TableRow>
@@ -89,25 +75,7 @@ export default function TreatmentData() {
 				</TableBody>
 			</Table>
 			</TableContainer>
-			<Container className={classes.buttonContainer}>
-					<Button
-						variant="contained"
-						startIcon={<Icon>arrow_back_ios</Icon>}
-						size="small"
-						onClick={ () => {
-							history.goBack()
-						}}
-					> back </Button>
-					<Button
-						variant="contained"
-						color="primary"
-						endIcon={<Icon>save</Icon>}
-						size="small"
-						onClick={ () => {
-							history.push('/treatment_record', user)
-						}}
-					> บันทึกข้อมูล </Button>
-					</Container>
+			</Container>
 		</React.Fragment>
 	);
 }

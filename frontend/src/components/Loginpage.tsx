@@ -5,7 +5,7 @@ import {
 	Box, Divider, Snackbar, Card,
 	InputLabel, Input, InputAdornment, IconButton, Icon
 } from '@material-ui/core';
-import MuiAlert, { AlertProps, Color as AlertColor } from '@material-ui/lab/Alert'
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert'
 import { 
 	Visibility, VisibilityOff, AccountCircle
 } from '@material-ui/icons'
@@ -107,7 +107,10 @@ export default function LoginPage() {
 		.then((response) => response.json())
 		.then((res) => {
 			if (res.data) {
-				history.replace("/home", {})
+				history.replace("/treatment_record_data", {})
+			} else {
+				setStatus(true);
+				setMessage({message:"Incorrect Username or Password", level:'error'});
 			}
 		});
 	};
