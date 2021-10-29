@@ -19,7 +19,7 @@ type UserData struct {
 	RoleName string
 }
 
-const secretKey = "TMRJWT"
+const trm_secretKey = "TMRJWT"
 
 // POST /Login
 // user login from login page
@@ -46,7 +46,7 @@ func TRM_LoginToSite(context *gin.Context) {
 		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(), //1 day
 	})
 
-	token, err := claims.SignedString([]byte(secretKey))
+	token, err := claims.SignedString([]byte(trm_secretKey))
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "can't authorize credential"})
@@ -71,7 +71,7 @@ func TRM_CheckAuth(context *gin.Context) {
 	cookie, _ := context.Cookie("g12_auth")
 
 	token, err := jwt.ParseWithClaims(cookie, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secretKey), nil
+		return []byte(trm_secretKey), nil
 	})
 
 	if err != nil {
