@@ -3,6 +3,7 @@ package entity
 import (
 	"time"
 
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -59,10 +60,12 @@ func SetupDatabase() {
 	db.Model(&Role{}).Create(&role5)
 
 	// รวมสมาชิกทุกตำแหน่ง >> entity User -------------------------------------------------------
+	password1, err := bcrypt.GenerateFromPassword([]byte("1234"), 14)
+	password2, err := bcrypt.GenerateFromPassword([]byte("5678"), 14)
 	dentist1 := User{
 		Name:     "กอเอ๋ย กอไก่",
 		Username: "nita",
-		Password: "5678",
+		Password: string(password2),
 		Role:     role1,
 	}
 	db.Model(&User{}).Create(&dentist1)
@@ -70,7 +73,7 @@ func SetupDatabase() {
 	dentist2 := User{
 		Name:     "ขอไข่ ในเล้า",
 		Username: "name",
-		Password: "1234",
+		Password: string(password1),
 		Role:     role1,
 	}
 	db.Model(&User{}).Create(&dentist2)
@@ -78,7 +81,7 @@ func SetupDatabase() {
 	dentistass1 := User{
 		Name:     "คอควาย เข้านา",
 		Username: "pitch",
-		Password: "1234",
+		Password: string(password1),
 		Role:     role2,
 	}
 	db.Model(&User{}).Create(&dentistass1)
@@ -86,7 +89,7 @@ func SetupDatabase() {
 	dentistass2 := User{
 		Name:     "งองู ใจกล้า",
 		Username: "kantapit",
-		Password: "5678",
+		Password: string(password2),
 		Role:     role2,
 	}
 	db.Model(&User{}).Create(&dentistass2)
@@ -94,7 +97,7 @@ func SetupDatabase() {
 	nurse1 := User{
 		Name:     "จอจาน ใช้ดี",
 		Username: "few",
-		Password: "1234",
+		Password: string(password1),
 		Role:     role3,
 	}
 	db.Model(&User{}).Create(&nurse1)
@@ -102,7 +105,7 @@ func SetupDatabase() {
 	nurse2 := User{
 		Name:     "ฉอฉิ่ง ตีดัง",
 		Username: "pcrc",
-		Password: "5678",
+		Password: string(password2),
 		Role:     role3,
 	}
 	db.Model(&User{}).Create(&nurse2)
@@ -110,7 +113,7 @@ func SetupDatabase() {
 	pharmacist1 := User{
 		Name:     "ชอช้าง วิ่งหนี",
 		Username: "fonthap",
-		Password: "1234",
+		Password: string(password1),
 		Role:     role4,
 	}
 	db.Model(&User{}).Create(&pharmacist1)
@@ -118,7 +121,7 @@ func SetupDatabase() {
 	pharmacist2 := User{
 		Name:     "ซอโซ่ ล่ามดี",
 		Username: "q1234",
-		Password: "5678",
+		Password: string(password2),
 		Role:     role4,
 	}
 	db.Model(&User{}).Create(&pharmacist2)
@@ -126,7 +129,7 @@ func SetupDatabase() {
 	financial1 := User{
 		Name:     "ญอหญิง โสภา",
 		Username: "tanodom",
-		Password: "1234",
+		Password: string(password1),
 		Role:     role5,
 	}
 	db.Model(&User{}).Create(&financial1)
@@ -134,7 +137,7 @@ func SetupDatabase() {
 	financial2 := User{
 		Name:     "ฐอฐาน เข้ามารอง",
 		Username: "s1234",
-		Password: "5678",
+		Password: string(password2),
 		Role:     role5,
 	}
 	db.Model(&User{}).Create(&financial2)
@@ -203,44 +206,44 @@ func SetupDatabase() {
 
 	// เวชระเบียน ------------------------------------------------------------------------------------------------------------
 	patient1 := Patient{
-		Firstname:   "พัชรชาติ",
-		Lastname:    "จิรศรีโสภา",
-		Age:         20,
-		IDcard:      "1329900000000",
-		Tel:         "0902571569",
-		PatientTime: time.Now(),
-		Sex:         sex1,
-		Job:         job3,
-		Insurance:   insurance3,
-		UserNurse:   nurse1,
+		Firstname: "พัชรชาติ",
+		Lastname:  "จิรศรีโสภา",
+		Age:       20,
+		IDcard:    "1329900000000",
+		Tel:       "0902571569",
+		Time:      time.Now(),
+		Sex:       sex1,
+		Job:       job3,
+		Insurance: insurance3,
+		UserNurse: nurse1,
 	}
 	db.Model(&Patient{}).Create(&patient1)
 
 	patient2 := Patient{
-		Firstname:   "สมหญิง",
-		Lastname:    "ซิ่งรถไถ",
-		Age:         26,
-		IDcard:      "1329900000001",
-		Tel:         "0808571549",
-		PatientTime: time.Now(),
-		Sex:         sex2,
-		Job:         job1,
-		Insurance:   insurance1,
-		UserNurse:   nurse1,
+		Firstname: "สมหญิง",
+		Lastname:  "ซิ่งรถไถ",
+		Age:       26,
+		IDcard:    "1329900000001",
+		Tel:       "0808571549",
+		Time:      time.Now(),
+		Sex:       sex2,
+		Job:       job1,
+		Insurance: insurance1,
+		UserNurse: nurse1,
 	}
 	db.Model(&Patient{}).Create(&patient2)
 
 	patient3 := Patient{
-		Firstname:   "สมชาย",
-		Lastname:    "มาอุดฟัน",
-		Age:         57,
-		IDcard:      "1329900000005",
-		Tel:         "0934547915",
-		PatientTime: time.Now(),
-		Sex:         sex2,
-		Job:         job1,
-		Insurance:   insurance1,
-		UserNurse:   nurse2,
+		Firstname: "สมชาย",
+		Lastname:  "มาอุดฟัน",
+		Age:       57,
+		IDcard:    "1329900000005",
+		Tel:       "0934547915",
+		Time:      time.Now(),
+		Sex:       sex2,
+		Job:       job1,
+		Insurance: insurance1,
+		UserNurse: nurse2,
 	}
 	db.Model(&Patient{}).Create(&patient3)
 
@@ -385,7 +388,7 @@ func SetupDatabase() {
 		Note:          "",
 		Patient:       patient1,
 		UserFinancial: financial1,
-		Treatment:     treatment1,
+		RemedyType:    remedy1,
 	}
 	db.Model(&Payment{}).Create(&Payment1)
 
@@ -395,7 +398,7 @@ func SetupDatabase() {
 		Note:          "",
 		Patient:       patient2,
 		UserFinancial: financial1,
-		Treatment:     treatment2,
+		RemedyType:    remedy2,
 	}
 	db.Model(&Payment{}).Create(&Payment2)
 
@@ -405,7 +408,7 @@ func SetupDatabase() {
 		Note:          "",
 		Patient:       patient3,
 		UserFinancial: financial1,
-		Treatment:     treatment3,
+		RemedyType:    remedy3,
 	}
 	db.Model(&Payment{}).Create(&Payment3)
 

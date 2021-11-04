@@ -1,16 +1,14 @@
 package controller
 
 import (
-	"github.com/ApisitSamorod/SA62G12/entity"
-
-	"github.com/gin-gonic/gin"
-
 	"net/http"
+
+	"github.com/ApisitSamorod/SA62G12/entity"
+	"github.com/gin-gonic/gin"
 )
 
 // POST /screening
 func CreateScreening(c *gin.Context) {
-
 	var screening_record entity.Screening
 	var patient entity.Patient
 	var medical_product entity.MedicalProduct

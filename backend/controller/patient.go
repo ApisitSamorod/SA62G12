@@ -1,17 +1,14 @@
 package controller
 
 import (
-	"github.com/ApisitSamorod/SA62G12/entity"
-
-	"github.com/gin-gonic/gin"
-
 	"net/http"
+
+	"github.com/ApisitSamorod/SA62G12/entity"
+	"github.com/gin-gonic/gin"
 )
 
 // POST /pat
-
 func CreatePatient(c *gin.Context) {
-
 	var insurance entity.Insurance
 	var job entity.Job
 	var sex entity.Sex
@@ -57,16 +54,16 @@ func CreatePatient(c *gin.Context) {
 
 	// 13: สร้าง Patient
 	wp := entity.Patient{
-		Firstname:   patient.Firstname,
-		Lastname:    patient.Lastname,
-		Age:         patient.Age,
-		IDcard:      patient.IDcard,
-		Tel:         patient.Tel,
-		Insurance:   insurance, // โยงความสัมพันธ์กับ Entity insurance
-		Job:         job,       // โยงความสัมพันธ์กับ Entity job
-		Sex:         sex,       // โยงความสัมพันธ์กับ Entity sex
-		UserNurse:   nurse,      // โยงความสัมพันธ์กับ Entity user
-		PatientTime: patient.PatientTime,
+		Firstname: patient.Firstname,
+		Lastname:  patient.Lastname,
+		Age:       patient.Age,
+		IDcard:    patient.IDcard,
+		Tel:       patient.Tel,
+		Insurance: insurance, // โยงความสัมพันธ์กับ Entity insurance
+		Job:       job,       // โยงความสัมพันธ์กับ Entity job
+		Sex:       sex,       // โยงความสัมพันธ์กับ Entity sex
+		UserNurse: nurse,     // โยงความสัมพันธ์กับ Entity user
+		Time:      patient.Time,
 	}
 
 	// 15: บันทึก
@@ -74,20 +71,19 @@ func CreatePatient(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": wp})
 
+	c.JSON(http.StatusOK, gin.H{"data": wp})
 }
 
 // GET /pats
 
 func ListPatient(c *gin.Context) {
-
 	var pats []entity.Patient
-	if err := entity.DB().Preload("Sex").Preload("Job").Preload("User").Preload("Insurance").Raw("SELECT * FROM patients").Find(&pats).Error; err != nil {
+
+	if err := entity.DB().Preload("Sex").Preload("Job").Preload("UserNurse").Preload("Insurance").Raw("SELECT * FROM patients").Find(&pats).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": pats})
-
 }

@@ -54,12 +54,12 @@ type Sex struct {
 
 type Patient struct {
 	gorm.Model
-	Firstname   string
-	Lastname    string
-	Age         int
-	IDcard      string `gorm:"uniqueIndex"`
-	Tel         string
-	PatientTime time.Time
+	Firstname string
+	Lastname  string
+	Age       int
+	IDcard    string `gorm:"uniqueIndex"`
+	Tel       string
+	Time      time.Time
 
 	UserNurseID *uint
 	UserNurse   User
@@ -114,7 +114,7 @@ type Treatment struct {
 	RemedyTypeID *uint
 	RemedyType   RemedyType
 
-	Payments []Payment `gorm:"foreignKey:TreatmentID"`
+	MedRecords []MedRecord `gorm:"foreignKey:TreatmentID"`
 }
 
 //ระบบย่อย ระบบบันทึกการนัดหมาย
@@ -123,6 +123,7 @@ type RemedyType struct {
 	Name      string
 	Appoints  []Appoint   `gorm:"foreignKey:RemedyTypeID"`
 	Treatment []Treatment `gorm:"foreignKey:RemedyTypeID"`
+	Payments  []Payment   `gorm:"foreignKey:RemedyTypeID"`
 }
 
 type Appoint struct {
@@ -176,6 +177,6 @@ type Payment struct {
 	UserFinancialID *uint
 	UserFinancial   User
 
-	TreatmentID *uint
-	Treatment   Treatment
+	RemedyTypeID *uint
+	RemedyType   RemedyType
 }

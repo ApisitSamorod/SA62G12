@@ -1,11 +1,10 @@
 package controller
 
 import (
-	"github.com/ApisitSamorod/SA62G12/entity"
-
-	"github.com/gin-gonic/gin"
-
 	"net/http"
+
+	"github.com/ApisitSamorod/SA62G12/entity"
+	"github.com/gin-gonic/gin"
 )
 
 // POST /treatmentRecord

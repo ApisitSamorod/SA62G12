@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/ApisitSamorod/SA62G12/entity"
-	"github.com/ApisitSamorod/SA62G12/services"
+	service "github.com/ApisitSamorod/SA62G12/services"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
@@ -24,7 +24,7 @@ const trm_secretKey = "TMRJWT"
 // POST /Login
 // user login from login page
 func TRM_LoginToSite(context *gin.Context) {
-	var data services.LoginData
+	var data service.LoginData
 	var user entity.User
 	if err := context.ShouldBindJSON(&data); err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
