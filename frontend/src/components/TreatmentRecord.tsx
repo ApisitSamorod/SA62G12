@@ -135,7 +135,7 @@ function TreatmentRecord( props: {user:UserLogin} ) {
 			ToothNumber			: otherData.toothNumber,
 			Date				: selectedDate,
 			ScreeningID			: selectedScreening,
-			DentistID			: props.user.ID,
+			UserDentistID		: props.user.ID,
 			RemedyTypeID		: selectedRemedy
 		};
 
@@ -204,7 +204,12 @@ function TreatmentRecord( props: {user:UserLogin} ) {
 								>
 								<MenuItem value=""><em>None</em></MenuItem>
 								{ screenings.map( (screening:ScreeningInterface) => (
-									<MenuItem value={screening.ID} >{screening.ID} {screening.Queue} {screening.Patient.Firstname} {screening.Patient.Lastname}</MenuItem>
+									<MenuItem value={screening.ID} >
+										{screening.ID} &nbsp;
+										{screening.Queue} &nbsp;
+										{screening.Patient.Firstname} &nbsp; 
+										{screening.Patient.Lastname}
+									</MenuItem>
 								))}
 							</Select>
 						</FormControl>
@@ -224,28 +229,19 @@ function TreatmentRecord( props: {user:UserLogin} ) {
 							</Select>
 						</FormControl>
 					</Grid>
-					<Grid item xs={12}> 
+					{ [['ใบสั่งยา', 'rawPrescription'],['หมายเหตุการสั่งยา','prescriptionInfo']].map( (prop: string[]) => (
+						<Grid item xs={12}> 
 						<FormControl fullWidth variant="outlined" >
 							<TextField
 								id="standard-multiline-flexible"
-								label="ใบสั่งยา"
-								onChange={handleDataChange('rawPrescription')}
+								label={prop[0]}
+								onChange={handleDataChange(prop[1] as keyof treatmentFields)}
 								multiline
 								maxRows={4}
 								/>
 						</FormControl>
-					</Grid>
-					<Grid item xs={12}> 
-						<FormControl fullWidth variant="outlined" >
-							<TextField
-								id="standard-multiline-flexible"
-								label="หมายเหตุการสั่งยา"
-								onChange={handleDataChange('prescriptionInfo')}
-								multiline
-								maxRows={4}
-								/>
-						</FormControl>
-					</Grid>
+						</Grid>
+					)) }
 					<Grid item xs={12}> 
 						<FormControl fullWidth variant="outlined" >
 							<TextField id="standard-basic" label="หมายเลขฟันที่รักษา" onChange={handleDataChange('toothNumber')}/>
@@ -260,17 +256,13 @@ function TreatmentRecord( props: {user:UserLogin} ) {
 								label="วันที่ทำการรักษา"
 								value={selectedDate}
 								onChange={handleDateChange}
-								KeyboardButtonProps={{
-									'aria-label': 'change date',
-								}}
+								KeyboardButtonProps={{ 'aria-label': 'change date',}}
 								/>
 							</MuiPickersUtilsProvider>
 						</FormControl>
 					</Grid>
 					<Grid item xs={12}>
-						<Button style={{float:"right"}} variant="contained" color="primary" 
-							onClick={submit}
-							> 
+						<Button style={{float:"right"}} variant="contained" color="primary" onClick={submit}> 
 							บันทึกข้อมูลการรักษา
 						</Button>
 					</Grid>
