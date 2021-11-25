@@ -294,39 +294,39 @@ func SetupDatabase() {
 	}
 	db.Model(&Screening{}).Create(&screening3)
 
-	// ใบวินิฉัย --------------------------------------------------------------------------------------------------------------------
-	treatment1 := Treatment{
-		PrescriptionRaw:  "A12",
-		PrescriptionNote: "",
-		ToothNumber:      "21",
-		Date:             time.Now(),
-		Screening:        screening1,
-		UserDentist:      dentist1,
-		RemedyType:       remedy1,
-	}
-	db.Model(&Treatment{}).Create(&treatment1)
+	// // ใบวินิฉัย --------------------------------------------------------------------------------------------------------------------
+	// treatment1 := Treatment{
+	// 	PrescriptionRaw:  "A12",
+	// 	PrescriptionNote: "",
+	// 	ToothNumber:      "21",
+	// 	Date:             time.Now(),
+	// 	Screening:        screening1,
+	// 	UserDentist:      dentist1,
+	// 	RemedyType:       remedy1,
+	// }
+	// db.Model(&Treatment{}).Create(&treatment1)
 
-	treatment2 := Treatment{
-		PrescriptionRaw:  "A12",
-		PrescriptionNote: "",
-		ToothNumber:      "21",
-		Date:             time.Now(),
-		Screening:        screening2,
-		UserDentist:      dentist1,
-		RemedyType:       remedy2,
-	}
-	db.Model(&Treatment{}).Create(&treatment2)
+	// treatment2 := Treatment{
+	// 	PrescriptionRaw:  "A12",
+	// 	PrescriptionNote: "",
+	// 	ToothNumber:      "21",
+	// 	Date:             time.Now(),
+	// 	Screening:        screening2,
+	// 	UserDentist:      dentist1,
+	// 	RemedyType:       remedy2,
+	// }
+	// db.Model(&Treatment{}).Create(&treatment2)
 
-	treatment3 := Treatment{
-		PrescriptionRaw:  "A12",
-		PrescriptionNote: "",
-		ToothNumber:      "21",
-		Date:             time.Now(),
-		Screening:        screening3,
-		UserDentist:      dentist2,
-		RemedyType:       remedy3,
-	}
-	db.Model(&Treatment{}).Create(&treatment3)
+	// treatment3 := Treatment{
+	// 	PrescriptionRaw:  "A12",
+	// 	PrescriptionNote: "",
+	// 	ToothNumber:      "21",
+	// 	Date:             time.Now(),
+	// 	Screening:        screening3,
+	// 	UserDentist:      dentist2,
+	// 	RemedyType:       remedy3,
+	// }
+	// db.Model(&Treatment{}).Create(&treatment3)
 
 	// การนัดหมาย ---------------------------------------------------------------------------------------------------------------
 	appoint1 := Appoint{
@@ -357,29 +357,29 @@ func SetupDatabase() {
 	db.Model(&Appoint{}).Create(&appoint3)
 
 	// รายการบันทึกการจ่ายยา ------------------------------------------------------------------------------------------------------------
-	MedRecord1 := MedRecord{
-		Amount:         2,
-		Treatment:      treatment1,
-		UserPharmacist: pharmacist1,
-		MedicalProduct: MedicalProduct2,
-	}
-	db.Model(&MedRecord{}).Create(&MedRecord1)
+	// MedRecord1 := MedRecord{
+	// 	Amount:         2,
+	// 	Treatment:      treatment1,
+	// 	UserPharmacist: pharmacist1,
+	// 	MedicalProduct: MedicalProduct2,
+	// }
+	// db.Model(&MedRecord{}).Create(&MedRecord1)
 
-	MedRecord2 := MedRecord{
-		Amount:         2,
-		Treatment:      treatment2,
-		UserPharmacist: pharmacist1,
-		MedicalProduct: MedicalProduct1,
-	}
-	db.Model(&MedRecord{}).Create(&MedRecord2)
+	// MedRecord2 := MedRecord{
+	// 	Amount:         2,
+	// 	Treatment:      treatment2,
+	// 	UserPharmacist: pharmacist1,
+	// 	MedicalProduct: MedicalProduct1,
+	// }
+	// db.Model(&MedRecord{}).Create(&MedRecord2)
 
-	MedRecord3 := MedRecord{
-		Amount:         3,
-		Treatment:      treatment3,
-		UserPharmacist: pharmacist2,
-		MedicalProduct: MedicalProduct3,
-	}
-	db.Model(&MedRecord{}).Create(&MedRecord3)
+	// MedRecord3 := MedRecord{
+	// 	Amount:         3,
+	// 	Treatment:      treatment3,
+	// 	UserPharmacist: pharmacist2,
+	// 	MedicalProduct: MedicalProduct3,
+	// }
+	// db.Model(&MedRecord{}).Create(&MedRecord3)
 
 	// การชำระเงิน ------------------------------------------------------------------------------------------------
 	Payment1 := Payment{
